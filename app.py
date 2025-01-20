@@ -31,4 +31,4 @@ def hello_world():
     print(f"Random 10-digit prime: {random_ten_digit_prime}")
     
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
