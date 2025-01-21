@@ -1,12 +1,12 @@
 from flask import Flask
 import random
-from sympy import primerange
+import sympy
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-
+    print("Hello, we made to batch 1")
 
     # Generate a list of 6-digit primes
     six_digit_primes = list(sympy.primerange(100000, 1000000)) 
