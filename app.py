@@ -1,34 +1,63 @@
 from flask import Flask
-import random
+import time
 import sympy
+
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    print("Hello, we made to batch 1")
+    # Question 2
+    print("Hello, we made to batch 2")
+   # Question 2
 
-    # Generate a list of 6-digit primes
-    six_digit_primes = list(sympy.primerange(100000, 1000000)) 
 
-    # Generate a list of 8-digit primes
-    eight_digit_primes = list(sympy.primerange(10000000, 100000000))  # All 8-digit primes
 
-    # Generate a list of 10-digit primes
-    ten_digit_primes = list(sympy.primerange(1000000000, 10000000000))
+    # List of prime numbers (pairwise)
+    prime_numbers = [10000019, 10000169]
 
-    print(f"6-digit primes: {six_digit_primes}")
-    print(f"8-digit primes: {eight_digit_primes}")
-    print(f"10-digit primes: {ten_digit_primes}")
-    
-    # Randomly select primes from each list
-    random_six_digit_prime = random.choice(six_digit_primes)
-    random_eight_digit_prime = random.choice(eight_digit_primes)
-    random_ten_digit_prime = random.choice(ten_digit_primes)
+    # Function to compute the private key 'd'
+    def private_key(p, q, e):
+        # Euler's totient function: phi(n) = (p-1)*(q-1)
+        phi_n = (p - 1) * (q - 1)
 
-    print(f"Random 6-digit prime: {random_six_digit_prime}")
-    print(f"Random 8-digit prime: {random_eight_digit_prime}")
-    print(f"Random 10-digit prime: {random_ten_digit_prime}")
+        start_time = time.time()  # Start timing the brute-force process
+
+        d = None
+
+        # Brute-forcing to find d such that (d * e) % phi_n == 1
+        for i in range(1, phi_n):
+            if (i * e) % phi_n == 1:
+                d = i  # Found the private key 'd'
+                break
+
+        end_time = time.time()  # End timing the brute-force process
+
+        total_time_taken = end_time - start_time  # Calculate the total time taken
+
+        return d, total_time_taken
+
+
+    e = 13  # Public exponent
+    times = []  # List to store the times for each pair of primes
+    digits = []  # List to store the number of digits for each prime pair
+
+    # Loop through each pair of prime numbers
+    for i in range(0, len(prime_numbers), 2):
+        p = prime_numbers[i]
+        q = prime_numbers[i + 1]
+
+        # Calculates the private key 'd' and time taken
+        d, total_time = private_key(p, q, e)
+
+        # Stores the results
+        times.append(total_time)
+        digits.append(len(str(p)))  # Get the number of digits in the prime number 'p'
+
+        print(f"\nFor {len(str(p))}-digit primes:")
+        print(f"p = {p}, q = {q}")
+        print(f"d = {d} in {total_time:.5f} seconds")
+            
     
 if __name__ == "__main__":
     app.run(debug=False)
